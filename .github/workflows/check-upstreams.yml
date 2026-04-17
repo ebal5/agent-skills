@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   issues: write
 
 jobs:
@@ -15,119 +15,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install pyyaml
-        run: pip install pyyaml
+      - name: Install ruamel.yaml
+        run: pip install ruamel.yaml
 
       - name: Check upstream skill updates
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/check_upstreams.py
+
+      - name: Commit updated SHA
         run: |
-          python3 << 'EOF'
-          import os
-          import subprocess
-          import sys
-          from pathlib import Path
-
-          import yaml
-
-          skills_dir = Path("skills")
-          token = os.environ["GH_TOKEN"]
-
-          def run(cmd):
-            result = subprocess.run(cmd, capture_output=True, text=True)
-            return result.stdout.strip(), result.returncode
-
-          def gh_api(path):
-            out, rc = run(["gh", "api", path])
-            if rc != 0:
-              return None
-            import json
-            return json.loads(out)
-
-          def get_latest_commit(repo, ref):
-            data = gh_api(f"repos/{repo}/commits/{ref}")
-            if data is None:
-              return None
-            return data.get("sha")
-
-          def issue_exists(title_prefix):
-            out, rc = run([
-              "gh", "issue", "list",
-              "--search", title_prefix,
-              "--state", "open",
-              "--json", "title",
-            ])
-            if rc != 0:
-              return False
-            import json
-            issues = json.loads(out)
-            return any(title_prefix in i["title"] for i in issues)
-
-          for skill_dir in sorted(skills_dir.iterdir()):
-            skill_md = skill_dir / "SKILL.md"
-            if not skill_md.exists():
-              continue
-
-            content = skill_md.read_text()
-            # Extract frontmatter
-            if not content.startswith("---"):
-              continue
-            end = content.index("---", 3)
-            fm_text = content[3:end]
-            try:
-              fm = yaml.safe_load(fm_text)
-            except yaml.YAMLError as e:
-              print(f"WARN: failed to parse {skill_md}: {e}", file=sys.stderr)
-              continue
-
-            metadata = fm.get("metadata", {}) or {}
-            upstream = metadata.get("upstream")
-            upstream_ref = metadata.get("upstream-ref")
-            if not upstream or not upstream_ref:
-              continue
-
-            skill_name = fm.get("name", skill_dir.name)
-            print(f"Checking {skill_name} -> {upstream}@{upstream_ref}")
-
-            latest_sha = get_latest_commit(upstream, upstream_ref)
-            if latest_sha is None:
-              print(f"  WARN: could not fetch latest commit for {upstream}@{upstream_ref}")
-              continue
-
-            # Read recorded SHA if any
-            sha_file = skill_dir / ".upstream-sha"
-            recorded_sha = sha_file.read_text().strip() if sha_file.exists() else None
-
-            if recorded_sha == latest_sha:
-              print(f"  up-to-date ({latest_sha[:7]})")
-              continue
-
-            # Update recorded SHA
-            sha_file.write_text(latest_sha + "\n")
-
-            title_prefix = f"[upstream-update] {skill_name}: {upstream}"
-            if issue_exists(title_prefix):
-              print(f"  issue already exists, skipping")
-              continue
-
-            body = (
-              f"Upstream **{upstream}** (`{upstream_ref}`) has new commits.\n\n"
-              f"- Skill: `{skill_name}`\n"
-              f"- Upstream path: `{metadata.get('upstream-path', '')}`\n"
-              f"- Previous SHA: `{recorded_sha or 'none'}`\n"
-              f"- Latest SHA: `{latest_sha}`\n\n"
-              f"Please review changes and update the skill if needed."
-            )
-            title = f"{title_prefix} の更新あり"
-            out, rc = run([
-              "gh", "issue", "create",
-              "--title", title,
-              "--body", body,
-            ])
-            if rc == 0:
-              print(f"  Created issue: {out}")
-            else:
-              print(f"  WARN: failed to create issue", file=sys.stderr)
-
-          print("Done")
-          EOF
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A
+            git commit -m "chore(upstream-sync): record latest upstream SHAs"
+            git push
+          else
+            echo "No changes to commit"
+          fi
