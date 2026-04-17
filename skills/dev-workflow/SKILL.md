@@ -178,3 +178,7 @@ superpowers の計画テンプレートは TDD サイクルを前提とするが
   コード変更を始めないこと
 - **依存プラグイン**: superpowers と commit-commands プラグインが
   有効であること
+- **`git branch -D` が permission denied されうる**: rtk や
+  `.claude/settings.json` の permission ルールで block される環境がある。
+  その場合は destructive ops として扱い、ユーザーに
+  `! git branch -D <name>` をコマンド欄で実行してもらう形に切り替える

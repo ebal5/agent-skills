@@ -1,3 +1,7 @@
+# Requires repo Actions settings to allow PR creation by GITHUB_TOKEN:
+#   gh api -X PUT repos/<owner>/<repo>/actions/permissions/workflow \
+#     -F can_approve_pull_request_reviews=true
+# Without this, `gh pr create` inside scripts/check_upstreams.py fails.
 name: check-upstreams
 
 on:
