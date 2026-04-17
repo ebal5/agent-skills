@@ -79,9 +79,10 @@ metadata:
 
 各候補案について問いかけテンプレート（後述）を使い、3 つのスコアを推定する。推定には強度推定ヒューリスティック（後述）を参照し、不確かな場合はユーザーに確認する。
 
-各案の (強度, 距離, 変動性) が確定したら、coupling-core/SKILL.md の方程式
-`均衡度 = max(|s - d|, 10 - v) + 1` で計算する。精度が要る場合は
-core の Python library (`coupling_core.balance.balance_score`) を呼び出してもよい。
+各案の (強度, 距離, 変動性) が確定したら、coupling-core の方程式
+`均衡度 = max(|s - d|, 10 - v) + 1` で計算する。
+精度が要る場合は coupling-core の公開 API (library / CLI) を呼び出してもよい。
+具体的な呼び出し方は coupling-core の `references/api.md` に記載。
 
 **出口条件**: 全候補案の (強度, 距離, 変動性, 均衡度) が出揃った時点で次へ。
 

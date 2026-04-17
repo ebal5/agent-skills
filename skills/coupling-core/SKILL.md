@@ -62,57 +62,11 @@ coupling-design-advisor・coupling-audit・coupling-rebalance の各スキルが
 | 5〜7 | **許容** | 許容範囲内だが改善余地あり。優先度低めで監視を続ける |
 | 1〜4 | **不均衡** | 見直し必須。設計的なリスクが高い状態 |
 
-## Python library
+## 実装参照
 
-当 skill repo 内の `src/coupling_core/` が純粋計算ライブラリを提供する。
-
-```python
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path("<skill-root>/src")))
-
-from coupling_core.balance import balance_score, interpret, recommend_rebalance
-
-score = balance_score(8, 6, 9)   # => 3
-verdict = interpret(score)        # => "不均衡"
-hints = recommend_rebalance(8, 6, 9)
-```
-
-`scripts/balance.py` は同ライブラリを薄く包んだ CLI ラッパーであり、
-ライブラリ自体は I/O・argparse を持たない純粋関数で構成されている。
-
-## CLI
-
-```bash
-uv run skills/coupling-core/scripts/balance.py <strength> <distance> <volatility>
-```
-
-### 出力例
-
-```json
-{
-  "strength": 8,
-  "distance": 6,
-  "volatility": 9,
-  "score": 3,
-  "verdict": "不均衡",
-  "hints": [
-    "強度を下げる (契約化 / 抽象境界)",
-    "変更後は再度スコアを計算して均衡を確認する"
-  ]
-}
-```
-
-各フィールドの意味:
-
-| フィールド | 型 | 説明 |
-| --- | --- | --- |
-| `score` | int | 均衡度（1-10） |
-| `verdict` | str | "良好" / "許容" / "不均衡" |
-| `hints` | list[str] | 優先的に調整すべき次元への具体的なアドバイス |
-
-引数が 1-10 の範囲外の場合は exit 1 でエラーを返す。
+- Python library および CLI の使い方は `references/api.md` を参照。
+- ケーススタディ集は `references/case-studies.md` を参照。
+- SKILL.md は **定義のみ**を持つ。operational な詳細は意図的に除外している。
 
 ## 注意点
 
