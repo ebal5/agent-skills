@@ -22,13 +22,13 @@ BOT_ENV = {
 }
 
 
-def run(cmd: list[str], **kwargs) -> tuple[str, int]:
+def run(cmd: list[str], **kwargs) -> tuple[str, str, int]:
     result = subprocess.run(cmd, capture_output=True, text=True, **kwargs)
-    return result.stdout.strip(), result.returncode
+    return result.stdout.strip(), result.stderr.strip(), result.returncode
 
 
 def gh_api(path: str) -> dict | None:
-    out, rc = run(["gh", "api", path])
+    out, _, rc = run(["gh", "api", path])
     if rc != 0:
         return None
     return json.loads(out)
@@ -40,7 +40,7 @@ def get_latest_commit(repo: str, ref: str) -> str | None:
 
 
 def open_pr_exists(branch: str) -> bool:
-    out, rc = run([
+    out, _, rc = run([
         "gh", "pr", "list",
         "--head", branch,
         "--state", "open",
@@ -136,9 +136,9 @@ def create_sync_pr(
         )
 
     # Create branch, update SKILL.md, commit, push, open PR
-    _, rc = run(["git", "checkout", "-b", branch])
+    _, stderr, rc = run(["git", "checkout", "-b", branch])
     if rc != 0:
-        print(f"WARN: failed to create branch {branch}", file=sys.stderr)
+        print(f"WARN: failed to create branch {branch}: {stderr}", file=sys.stderr)
         return
 
     try:
@@ -149,20 +149,20 @@ def create_sync_pr(
 
         run(["git", "add", str(skill_md)])
         commit_msg = f"chore(upstream-sync): record {skill_name} @ {latest_sha[:8]}"
-        _, rc = run(
+        _, stderr, rc = run(
             ["git", "commit", "-m", commit_msg],
             env={**os.environ, **BOT_ENV},
         )
         if rc != 0:
-            print(f"WARN: git commit failed for {skill_name}", file=sys.stderr)
+            print(f"WARN: git commit failed for {skill_name}: {stderr}", file=sys.stderr)
             return
 
-        _, rc = run(["git", "push", "origin", branch])
+        _, stderr, rc = run(["git", "push", "origin", branch])
         if rc != 0:
-            print(f"WARN: git push failed for branch {branch}", file=sys.stderr)
+            print(f"WARN: git push failed for branch {branch}: {stderr}", file=sys.stderr)
             return
 
-        out, rc = run([
+        out, stderr, rc = run([
             "gh", "pr", "create",
             "--title", pr_title,
             "--body", pr_body,
@@ -172,7 +172,7 @@ def create_sync_pr(
         if rc == 0:
             print(f"[pr] {skill_name}: created {out}")
         else:
-            print(f"WARN: failed to create PR for {skill_name}", file=sys.stderr)
+            print(f"WARN: failed to create PR for {skill_name}: {stderr}", file=sys.stderr)
     finally:
         run(["git", "checkout", "main"])
 
