@@ -1,0 +1,14 @@
+{
+  // SKILL.md files start with YAML frontmatter, not an h1 heading
+  "MD041": false,
+  // Allow duplicate headings (e.g. repeated "出口条件" sections in skill docs)
+  "MD024": false,
+  // Inline HTML is used intentionally in some skills (e.g. <HARD-GATE>)
+  "MD033": false,
+  // Line length: relax for skill descriptions with long content
+  "MD013": {
+    "line_length": 120,
+    "code_blocks": false,
+    "tables": false
+  }
+}
