@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Check upstream skill updates and sync recorded SHA in frontmatter."""
+"""Check upstream skill updates and open PRs to sync recorded SHA in frontmatter."""
 from __future__ import annotations
 
 import io
 import json
+import os
 import re
 import subprocess
 import sys
@@ -13,9 +14,16 @@ from ruamel.yaml import YAML
 
 SKILLS_DIR = Path("skills")
 
+BOT_ENV = {
+    "GIT_AUTHOR_NAME": "github-actions[bot]",
+    "GIT_AUTHOR_EMAIL": "41898282+github-actions[bot]@users.noreply.github.com",
+    "GIT_COMMITTER_NAME": "github-actions[bot]",
+    "GIT_COMMITTER_EMAIL": "41898282+github-actions[bot]@users.noreply.github.com",
+}
 
-def run(cmd: list[str]) -> tuple[str, int]:
-    result = subprocess.run(cmd, capture_output=True, text=True)
+
+def run(cmd: list[str], **kwargs) -> tuple[str, int]:
+    result = subprocess.run(cmd, capture_output=True, text=True, **kwargs)
     return result.stdout.strip(), result.returncode
 
 
@@ -31,16 +39,16 @@ def get_latest_commit(repo: str, ref: str) -> str | None:
     return data.get("sha") if data else None
 
 
-def issue_exists(title_prefix: str) -> bool:
+def open_pr_exists(branch: str) -> bool:
     out, rc = run([
-        "gh", "issue", "list",
-        "--search", title_prefix,
+        "gh", "pr", "list",
+        "--head", branch,
         "--state", "open",
-        "--json", "title",
+        "--json", "number",
     ])
     if rc != 0:
         return False
-    return any(title_prefix in i["title"] for i in json.loads(out))
+    return len(json.loads(out)) > 0
 
 
 def split_frontmatter(text: str) -> tuple[str, str] | None:
@@ -64,6 +72,95 @@ def dump_frontmatter(fm, yaml: YAML) -> str:
 def write_skill_md(skill_md: Path, fm, body: str, yaml: YAML) -> None:
     fm_text = dump_frontmatter(fm, yaml)
     skill_md.write_text(f"---\n{fm_text}---\n{body}")
+
+
+def create_sync_pr(
+    skill_name: str,
+    skill_md: Path,
+    fm,
+    body: str,
+    yaml: YAML,
+    upstream: str,
+    upstream_ref: str,
+    upstream_path: str,
+    recorded_sha: str | None,
+    latest_sha: str,
+) -> None:
+    branch = f"upstream-sync/{skill_name}-{latest_sha[:8]}"
+
+    if open_pr_exists(branch):
+        print(f"[skip] {skill_name}: open PR for branch {branch} already exists")
+        return
+
+    is_initial = recorded_sha is None
+
+    if is_initial:
+        pr_title = f"[upstream-sync] initial: {skill_name} ({upstream} @ {latest_sha[:8]})"
+        pr_body = (
+            f"Upstream **{upstream}** (`{upstream_ref}`) has new commits.\n\n"
+            f"- Skill: `{skill_name}`\n"
+            f"- Upstream path: `{upstream_path}`\n"
+            f"- Previous SHA: `none`\n"
+            f"- Latest SHA: `{latest_sha}`\n\n"
+            "Merging this PR advances the recorded SHA in SKILL.md frontmatter. "
+            "No other code changes are made by this PR."
+        )
+    else:
+        pr_title = f"[upstream-sync] {skill_name}: {upstream} -> {latest_sha[:8]}"
+        compare_url = (
+            f"https://github.com/{upstream}/compare/{recorded_sha}...{latest_sha}"
+        )
+        pr_body = (
+            f"Upstream **{upstream}** (`{upstream_ref}`) has new commits.\n\n"
+            f"- Skill: `{skill_name}`\n"
+            f"- Upstream path: `{upstream_path}`\n"
+            f"- Previous SHA: `{recorded_sha}`\n"
+            f"- Latest SHA: `{latest_sha}`\n"
+            f"- Compare: {compare_url}\n\n"
+            "Merging this PR advances the recorded SHA in SKILL.md frontmatter. "
+            "No other code changes are made by this PR."
+        )
+
+    # Create branch, update SKILL.md, commit, push, open PR
+    _, rc = run(["git", "checkout", "-b", branch])
+    if rc != 0:
+        print(f"WARN: failed to create branch {branch}", file=sys.stderr)
+        return
+
+    try:
+        metadata = fm.get("metadata") or {}
+        metadata["upstream-sha"] = latest_sha
+        fm["metadata"] = metadata
+        write_skill_md(skill_md, fm, body, yaml)
+
+        run(["git", "add", str(skill_md)])
+        commit_msg = f"chore(upstream-sync): record {skill_name} @ {latest_sha[:8]}"
+        _, rc = run(
+            ["git", "commit", "-m", commit_msg],
+            env={**os.environ, **BOT_ENV},
+        )
+        if rc != 0:
+            print(f"WARN: git commit failed for {skill_name}", file=sys.stderr)
+            return
+
+        _, rc = run(["git", "push", "origin", branch])
+        if rc != 0:
+            print(f"WARN: git push failed for branch {branch}", file=sys.stderr)
+            return
+
+        out, rc = run([
+            "gh", "pr", "create",
+            "--title", pr_title,
+            "--body", pr_body,
+            "--base", "main",
+            "--head", branch,
+        ])
+        if rc == 0:
+            print(f"[pr] {skill_name}: created {out}")
+        else:
+            print(f"WARN: failed to create PR for {skill_name}", file=sys.stderr)
+    finally:
+        run(["git", "checkout", "main"])
 
 
 def main() -> int:
@@ -102,54 +199,28 @@ def main() -> int:
             )
             continue
 
-        if recorded_sha is None:
-            # Initial sync: record without creating an issue
-            print(f"[init] {skill_name}: recording initial SHA {latest_sha[:7]}")
-            metadata["upstream-sha"] = latest_sha
-            fm["metadata"] = metadata
-            write_skill_md(skill_md, fm, body, yaml)
-            continue
-
         if recorded_sha == latest_sha:
             print(f"[up-to-date] {skill_name}: {latest_sha[:7]}")
             continue
 
-        # Upstream has new commits
-        title_prefix = f"[upstream-update] {skill_name}: {upstream}"
-        title = f"{title_prefix} の更新あり"
-        if issue_exists(title_prefix):
-            print(f"[skip] {skill_name}: issue already exists")
+        upstream_path = metadata.get("upstream-path", "")
+        if recorded_sha is None:
+            print(f"[init] {skill_name}: creating initial sync PR @ {latest_sha[:8]}")
         else:
-            upstream_path = metadata.get("upstream-path", "")
-            compare_url = (
-                f"https://github.com/{upstream}/compare/{recorded_sha}...{latest_sha}"
-            )
-            body_text = (
-                f"Upstream **{upstream}** (`{upstream_ref}`) has new commits.\n\n"
-                f"- Skill: `{skill_name}`\n"
-                f"- Upstream path: `{upstream_path}`\n"
-                f"- Previous SHA: `{recorded_sha}`\n"
-                f"- Latest SHA: `{latest_sha}`\n"
-                f"- Compare: {compare_url}\n\n"
-                "Review changes and update the skill if needed. "
-                "The recorded SHA has been advanced automatically to the latest."
-            )
-            out, rc = run([
-                "gh", "issue", "create",
-                "--title", title,
-                "--body", body_text,
-            ])
-            if rc == 0:
-                print(f"[issue] {skill_name}: created {out}")
-            else:
-                print(
-                    f"WARN: failed to create issue for {skill_name}", file=sys.stderr
-                )
+            print(f"[diff] {skill_name}: {recorded_sha[:7]} -> {latest_sha[:7]}")
 
-        # Always advance SHA to avoid repeated diffs on next run
-        metadata["upstream-sha"] = latest_sha
-        fm["metadata"] = metadata
-        write_skill_md(skill_md, fm, body, yaml)
+        create_sync_pr(
+            skill_name=skill_name,
+            skill_md=skill_md,
+            fm=fm,
+            body=body,
+            yaml=yaml,
+            upstream=upstream,
+            upstream_ref=upstream_ref,
+            upstream_path=upstream_path,
+            recorded_sha=recorded_sha,
+            latest_sha=latest_sha,
+        )
 
     return 0
 
