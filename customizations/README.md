@@ -11,7 +11,7 @@ upstream-sync PR をマージするたびに「何を取り込み、何を残し
 
 | 層 | 場所 | 特徴 |
 | --- | --- | --- |
-| PR body `## Customization notes` | squash commit message に永続 | `git log` で検索可能 |
+| PR body `## Customization notes` | merge commit message に永続 | `git log` で検索可能 |
 | `customizations/<skill>/NOTES.md` | このディレクトリ以下 | 時系列で閲覧しやすい |
 
 どちらか一方では不十分なため、upstream-sync PR をマージする際は **両方** を更新する。
@@ -20,7 +20,7 @@ upstream-sync PR をマージするたびに「何を取り込み、何を残し
 
 upstream-sync PR をマージするとき:
 
-1. PR body の `## Customization notes` セクションに意図を書く（squash commit message になる）
+1. PR body の `## Customization notes` セクションに意図を書く（merge commit message に入る）
 2. `customizations/<skill>/NOTES.md` に新しいエントリを **先頭に** 追記する
 
 ## ディレクトリ規約
