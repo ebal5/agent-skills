@@ -121,6 +121,31 @@ reviewer または fix エージェントが動作確認のため一時スクリ
   network / env exfil / dynamic exec / obfuscation)
 - `clean` 判定のみ実行許可、`suspicious` / `dangerous` はユーザー確認
 
+## 新規スキル scaffold 直後の self-apply 推奨
+
+新規に書いた skill (SKILL.md + 補助スクリプト + references) は、scaffold 直後
+に本 skill を self-apply すると効果が高い。経験上:
+
+- **round 1 (3 視点並列)**: path 参照・命名・責務分離・ライブラリ/CLI 未分離
+  など、設計書段階では気づかない構造欠陥が Architecture Opus 視点で次々出る
+- **round 2 (軽量、Architecture 単視点)**: round 1 の再整理で生じた二次問題
+  （削除した情報が別セクションに逆流、依存の方向が逆転等）を拾う
+
+scaffold した skill を merge する前に round 2 まで回すのがちょうどよい。
+round 1 だけだと「構造を分けたが境界が曖昧」という状態で止まりがち。
+
+### 発火パターン
+
+- skill-creator で scaffold 直後
+- dev-workflow の Phase 4 (Wrap-up) 前の最終検証として
+- 「この skill レビューしてほしい」という明示的依頼
+
+### 注意点
+
+- reviewer には過去ラウンドの findings を渡さない（追認を避ける）
+- ≥ 8 のみ即 FIX、5-7 は Issue 起票でトラッキング、という default 閾値が
+  scaffold レビューでは機能しやすい（最初から高スコア指摘が大量に出るため）
+
 ## アンチパターン
 
 - **Reviewer に前ラウンドの findings を渡してしまう** → 追認が起きて独立性喪失
