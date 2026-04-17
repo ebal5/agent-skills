@@ -24,6 +24,42 @@ is also supported — `gh skill install` walks the repo tree to locate
 `SKILL.md`, so both flat names and repo-relative paths can appear in
 profile files.
 
+## Skill metadata conventions
+
+Every `SKILL.md` has YAML frontmatter. The `metadata` block follows
+one of two shapes depending on origin:
+
+### Ported from another repo (tracked upstream)
+
+```yaml
+metadata:
+  origin: "https://github.com/ebal5/agent-skills"
+  upstream: "owner/repo"
+  upstream-path: "path/inside/upstream"
+  upstream-ref: "main"
+  upstream-sha: <40-char SHA at last sync>
+```
+
+`scripts/check_upstreams.py` polls these skills and opens
+`[upstream-sync]` PRs when `upstream-sha` falls behind `upstream-ref`.
+These skills should also have an entry under `customizations/<skill>/`
+(see `customizations/README.md`).
+
+### Authored originally in this repo
+
+```yaml
+metadata:
+  origin: "https://github.com/ebal5/agent-skills"
+```
+
+The `upstream-*` fields are **absent** (not empty strings).
+`check_upstreams.py` skips skills without `upstream` / `upstream-ref`,
+so the absence is the signal that no sync is needed. These skills
+also do **not** require a `customizations/<skill>/` entry.
+
+Do not mix the two shapes (e.g. `upstream: ""` placeholders) — the
+check script's contract is "field absent → original, no sync".
+
 ## Development (symlink workflow)
 
 For heavy iteration on a skill while using it in a consumer project,
