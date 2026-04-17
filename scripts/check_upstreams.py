@@ -103,7 +103,7 @@ def create_sync_pr(
         f"- [ ] `customizations/{skill_name}/NOTES.md` にも追記する\n\n"
         "## Customization notes\n\n"
         "<!-- この PR で upstream の何を採用し、こっちで何を残した/変えたか、意図を書く。\n"
-        "     squash merge されると main の commit message に残り、git log で検索できる。 -->\n\n"
+        "     merge されると PR body が main の commit message に入り、git log で検索できる。 -->\n\n"
         "---\n"
         "Merging this PR advances `metadata.upstream-sha` in SKILL.md.\n"
         "Additional commits on this branch are welcome (the bot will not rebase)."
