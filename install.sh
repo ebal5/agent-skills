@@ -1,4 +1,13 @@
 #!/usr/bin/env bash
+# Bulk installer for agent-skills profiles.
+#
+# Usage: ./install.sh <profile> [--scope user|project] [--pin <ref>]
+#
+# Each non-blank, non-comment line in install-sets/<profile>.txt is
+# passed as the skill name to `gh skill install`. Both flat names
+# ("dev-workflow") and repo-relative paths ("category/skill-name")
+# work because gh skill walks the source repo to locate SKILL.md.
+
 set -euo pipefail
 
 scope="user"
