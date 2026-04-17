@@ -1,5 +1,5 @@
 ---
-name: coupling-core
+name: coupling-model
 description: |
   3 次元モデル (統合強度 × 距離 × 変動性) と均衡結合方程式の定義・スケール・
   解釈帯をまとめた共有参照スキル。用語・式・判定基準を単一ソースとして
@@ -21,7 +21,7 @@ metadata:
   origin: "https://github.com/ebal5/agent-skills"
 ---
 
-# coupling-core
+# coupling-model
 
 ## 概要
 
@@ -29,6 +29,10 @@ metadata:
 **均衡結合方程式** を蒸留した共有基盤である。
 coupling-design-advisor・coupling-audit・coupling-rebalance の各スキルが参照する
 用語定義・スケール変換・バランス計算を一箇所に集約し、プロジェクトをまたいだ一貫した設計議論を可能にする。
+
+名称注記: `coupling-model` は「3 次元モデル本体」の意であり、
+本書のドメイン用語「コアサブドメイン (core subdomain)」とは概念が異なる。
+旧名 `coupling-core` から v0.2.2 で改名された (Issue #17)。
 
 ## 用語
 
@@ -64,9 +68,19 @@ coupling-design-advisor・coupling-audit・coupling-rebalance の各スキルが
 
 ## 実装参照
 
-- Python library および CLI の使い方は `references/api.md` を参照。
-- ケーススタディ集は `references/case-studies.md` を参照。
+- CLI (`scripts/balance.py`) の使い方は `references/api.md` を参照。
 - SKILL.md は **定義のみ**を持つ。operational な詳細は意図的に除外している。
+
+## ケーススタディの所属
+
+書籍のケーススタディ集は **consuming skill 側が自前で保持する** 方針。
+advisor は `skills/coupling-design-advisor/references/case-studies.md` を
+設計時フレーミングで保守する。将来の coupling-rebalance は改善時フレーミングで
+自前の case-studies を持つ想定。
+
+coupling-model は **定義の単一ソース**に徹し、consuming skill が文脈ごとに
+少量の複製を持つほうが、skill 間の path 結合 (Issue #19) を避けつつ各用途に
+最適化できる。
 
 ## 注意点
 

@@ -50,9 +50,12 @@ metadata:
 
 ## 前提
 
-本スキルを起動する前に、`skills/coupling-core/SKILL.md` を読み込むこと。
-用語定義・1-10 スケール・均衡結合方程式・解釈帯の **正式な定義はすべて coupling-core が単一ソース** である。
-ここではそれらを再掲しない。ケーススタディは `skills/coupling-core/references/case-studies.md` を参照する。
+本スキルを起動する前に、`skills/coupling-model/SKILL.md` を読み込むこと。
+用語定義・1-10 スケール・均衡結合方程式・解釈帯の **正式な定義はすべて coupling-model が単一ソース** である。
+ここではそれらを再掲しない。
+ケーススタディは本スキル配下の `references/case-studies.md` に自前で保持している
+（設計時フレーミング）。将来の coupling-rebalance は改善時フレーミングで
+自前の case-studies を持つ想定。
 
 ## ワークフロー
 
@@ -82,10 +85,10 @@ metadata:
 
 各候補案について問いかけテンプレート（後述）を使い、3 つのスコアを推定する。推定には強度推定ヒューリスティック（後述）を参照し、不確かな場合はユーザーに確認する。
 
-各案の (強度, 距離, 変動性) が確定したら、coupling-core の方程式
+各案の (強度, 距離, 変動性) が確定したら、coupling-model の方程式
 `均衡度 = max(|s - d|, 10 - v) + 1` で計算する。
-精度が要る場合は coupling-core の公開 API (library / CLI) を呼び出してもよい。
-具体的な呼び出し方は coupling-core の `references/api.md` に記載。
+精度が要る場合は coupling-model の公開 CLI を呼び出してもよい。
+具体的な呼び出し方は coupling-model の `references/api.md` に記載。
 
 **出口条件**: 全候補案の (強度, 距離, 変動性, 均衡度) が出揃った時点で次へ。
 
@@ -183,7 +186,8 @@ advisor が対話で 3 次元スコアを引き出す際の初期推定表。ユ
 ## ケーススタディ参照
 
 本スキルの few-shot 参考として、書籍『ソフトウェア設計の結合バランス』の代表ケースを
-設計相談の Q&A 形式に翻案した 4 件を `skills/coupling-core/references/case-studies.md` に収録している。
+設計相談の Q&A 形式に翻案した 4 件を **本スキル配下の**
+`references/case-studies.md` に収録している（設計時フレーミングで保守）。
 
 - 例 1: 強度が不可避 → 距離で救う（設計時の境界選択）
 - 例 2: 戦略的変更への反応（サブドメイン昇格 → 強度削減）
@@ -192,6 +196,10 @@ advisor が対話で 3 次元スコアを引き出す際の初期推定表。ユ
 
 類似する設計パターンに遭遇した場合は同ファイルを参照すること。
 プロンプトテンプレート断片と選定ロジックも同ファイル末尾に記載。
+
+coupling-model 側には case-studies を置かない方針（Issue #19 対処）:
+consuming skill が文脈に合わせて自前で保持することで skill 間の raw-path
+結合を回避している。
 
 ## チェックポイント評価
 
