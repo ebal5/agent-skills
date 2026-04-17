@@ -94,16 +94,30 @@ def create_sync_pr(
 
     is_initial = recorded_sha is None
 
+    review_block = (
+        "## Review\n\n"
+        "- [ ] upstream の差分を確認する\n"
+        "- [ ] 取り込みたい変更があれば追加コミットする\n"
+        "- [ ] 独自カスタマイズを維持・調整する\n"
+        "- [ ] 必要なら ATTRIBUTION.md を更新する\n\n"
+        "## Customization notes\n\n"
+        "<!-- この PR で upstream の何を採用し、こっちで何を残した/変えたか、意図を書く。\n"
+        "     squash merge されると main の commit message に残り、git log で検索できる。 -->\n\n"
+        "---\n"
+        "Merging this PR advances `metadata.upstream-sha` in SKILL.md.\n"
+        "Additional commits on this branch are welcome (the bot will not rebase)."
+    )
+
     if is_initial:
         pr_title = f"[upstream-sync] initial: {skill_name} ({upstream} @ {latest_sha[:8]})"
         pr_body = (
-            f"Upstream **{upstream}** (`{upstream_ref}`) has new commits.\n\n"
+            f"Initial upstream sync for **{skill_name}**.\n\n"
             f"- Skill: `{skill_name}`\n"
+            f"- Upstream: `{upstream}` (`{upstream_ref}`)\n"
             f"- Upstream path: `{upstream_path}`\n"
             f"- Previous SHA: `none`\n"
             f"- Latest SHA: `{latest_sha}`\n\n"
-            "Merging this PR advances the recorded SHA in SKILL.md frontmatter. "
-            "No other code changes are made by this PR."
+            f"{review_block}"
         )
     else:
         pr_title = f"[upstream-sync] {skill_name}: {upstream} -> {latest_sha[:8]}"
@@ -117,8 +131,7 @@ def create_sync_pr(
             f"- Previous SHA: `{recorded_sha}`\n"
             f"- Latest SHA: `{latest_sha}`\n"
             f"- Compare: {compare_url}\n\n"
-            "Merging this PR advances the recorded SHA in SKILL.md frontmatter. "
-            "No other code changes are made by this PR."
+            f"{review_block}"
         )
 
     # Create branch, update SKILL.md, commit, push, open PR

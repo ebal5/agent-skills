@@ -15,7 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.UPSTREAM_SYNC_PAT }}
           fetch-depth: 0
 
       - name: Install ruamel.yaml
@@ -23,5 +22,5 @@ jobs:
 
       - name: Check upstream skill updates
         env:
-          GH_TOKEN: ${{ secrets.UPSTREAM_SYNC_PAT }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 scripts/check_upstreams.py
