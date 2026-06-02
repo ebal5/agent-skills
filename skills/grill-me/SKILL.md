@@ -12,9 +12,9 @@ license: MIT
 metadata:
   origin: "https://github.com/ebal5/agent-skills"
   upstream: "mattpocock/skills"
-  upstream-path: "grill-me"
+  upstream-path: "skills/productivity/grill-me"
   upstream-ref: "main"
-  upstream-sha: 651eab033bdf8f7fd535c274f8cbe839075aba5e
+  upstream-sha: aaf2453fbdfe7a15c07f11d861224f34ab4b53cb
 ---
 
 <!-- Based on https://github.com/mattpocock/skills (MIT License, Copyright (c) 2026 Matt Pocock) -->
