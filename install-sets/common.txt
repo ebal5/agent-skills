@@ -7,4 +7,5 @@ grill-me
 handover
 markdown-check
 review-loop
+teach-me
 uv-script
