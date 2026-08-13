@@ -2,7 +2,7 @@
 # One skill per line. Flat names or "category/skill-name" paths both work
 # (gh skill walks the source repo to locate SKILL.md).
 execute-script-safely
-grill-me
+grilling
 handover
 markdown-check
 review-loop
