@@ -9,7 +9,10 @@ name: release
 #   patch  既存スキルの内容更新
 #   none   README / CI / scripts だけの変更 → タグを打たない
 #
-# タグを打ちたくないときは、コミットメッセージに [skip release] を入れる。
+# タグを打ちたくないときは、コミットの件名 (1 行目) に [skip release] を入れる。
+# squash マージでは PR タイトルが件名になるので、PR タイトルに入れればよい。
+# 本文は見ない。squash マージのメッセージには PR 本文が丸ごと入るため、
+# 本文でこの記法に言及しただけでスキップが誤発火するのを避ける。
 
 on:
   push:
@@ -23,7 +26,6 @@ concurrency:
 jobs:
   tag:
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, '[skip release]')"
     permissions:
       contents: write
     steps:
@@ -37,6 +39,13 @@ jobs:
         id: decide
         run: |
           set -euo pipefail
+          # 件名だけを見る。本文には PR 本文が入るので、記法への言及で誤発火する。
+          subject="$(git log -1 --format=%s)"
+          if [[ "$subject" == *"[skip release]"* ]]; then
+            echo "件名に [skip release] があるのでスキップする: $subject"
+            echo "version=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           version="$(python3 scripts/next_version.py --format tag)"
           if [[ -z "$version" ]]; then
             echo "配布物に変化なし。タグは打たない。"

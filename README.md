@@ -132,7 +132,10 @@ python3 scripts/next_version.py --prev v1.0.0 --format notes
 ```
 
 To land something on `main` without cutting a tag, put `[skip release]` in
-the commit message.
+the commit **subject** — with squash merges that means the PR title. The body
+is deliberately not scanned: a squash merge puts the whole PR description into
+the commit message, so a PR that merely mentions the marker would suppress its
+own release.
 
 ## Security scanning
 
