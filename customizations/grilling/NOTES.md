@@ -54,6 +54,12 @@ be55a797 → 84fdeffd の sync。**upstream が grill-me を分割した**ため
 - `metadata.upstream-path` を `skills/productivity/grill-me` →
   `skills/productivity/grilling` に変更。本文の出所を指す情報フィールドで、
   `check_upstreams.py` は repo HEAD の SHA しか見ないため sync 動作には影響しない。
+- セキュリティスキャン (SkillSpector v2.9.4, `--no-llm`): **8/100 LOW / SAFE**。
+  MEDIUM の EA2 (Autonomous Decision Making) が 1 件、「事実は自分で調べる」の
+  行に出たが誤検知と判断した。決定は必ずユーザーに戻す設計
+  (`The _decisions_ are the user's` / `Do not act on it until the user confirms`)
+  で、ツールも読み取り系に限られている。ゲート (>50) は通るため baseline には
+  登録せず、シグナルとして残す。
 - 次回 sync 時の注意: 差分を見るときは `grill-me` ではなく **`grilling`**
   を見ること。upstream の `grill-me` はランチャーのままのはず。
 
