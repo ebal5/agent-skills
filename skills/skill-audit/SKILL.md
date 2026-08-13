@@ -29,24 +29,27 @@ CI が落ちたとき・外部スキルを取り込むときに手元で使う�
 `uv` が必要（<https://docs.astral.sh/uv/getting-started/installation/>）。
 
 スキャナは commit SHA で pin する。タグは付け替え可能なので使わない。
-**SHA は `.github/workflows/skill-scan.yml` の `SKILLSPECTOR_REF` と必ず揃える。**
+**この SHA は `.github/workflows/skill-scan.yml` の `SKILLSPECTOR_REF` と
+必ず揃える**（現在: SkillSpector v2.9.4 = `2d198ab9...`）。
 
-```text
-SKILLSPECTOR = git+https://github.com/NVIDIA/skillspector.git@2d198ab910add401cad658d1087e7c7ba24fd640
-```
+以下のコマンドは URL を毎回そのまま書いている。シェル変数に入れて使い回さない
+こと — ツール呼び出しごとにシェルが変わり、変数が引き継がれない環境では
+`uvx --from ""` になって黙って壊れる。
 
 ## Step 1: 静的スキャン
 
 まず LLM なしで走らせる。決定的で、鍵も要らない。
 
 ```bash
-uvx --from "$SKILLSPECTOR" skillspector scan <skill-dir>/ --no-llm --format markdown
+uvx --from git+https://github.com/NVIDIA/skillspector.git@2d198ab910add401cad658d1087e7c7ba24fd640 \
+  skillspector scan <skill-dir>/ --no-llm --format markdown
 ```
 
 既存の baseline があれば併せて渡す。
 
 ```bash
-uvx --from "$SKILLSPECTOR" skillspector scan <skill-dir>/ --no-llm \
+uvx --from git+https://github.com/NVIDIA/skillspector.git@2d198ab910add401cad658d1087e7c7ba24fd640 \
+  skillspector scan <skill-dir>/ --no-llm \
   --baseline .skillspector/baselines/<skill>.yaml --show-suppressed
 ```
 
@@ -59,7 +62,8 @@ LLM 段も有効にする。ローカルの `claude` 認証をそのまま使う
 API キーは不要。
 
 ```bash
-SKILLSPECTOR_PROVIDER=claude_cli uvx --from "$SKILLSPECTOR" \
+SKILLSPECTOR_PROVIDER=claude_cli \
+  uvx --from git+https://github.com/NVIDIA/skillspector.git@2d198ab910add401cad658d1087e7c7ba24fd640 \
   skillspector scan <skill-dir>/
 ```
 
@@ -89,7 +93,8 @@ SKILLSPECTOR_PROVIDER=claude_cli uvx --from "$SKILLSPECTOR" \
 誤検知と判断したものだけを抑制する。理由を必ず残す。
 
 ```bash
-uvx --from "$SKILLSPECTOR" skillspector baseline <skill-dir>/ --no-llm \
+uvx --from git+https://github.com/NVIDIA/skillspector.git@2d198ab910add401cad658d1087e7c7ba24fd640 \
+  skillspector baseline <skill-dir>/ --no-llm \
   -o .skillspector/baselines/<skill>.yaml \
   --reason "<なぜ誤検知と判断したか。判断日も入れる>"
 ```
@@ -101,7 +106,8 @@ uvx --from "$SKILLSPECTOR" skillspector baseline <skill-dir>/ --no-llm \
 登録後、抑制が効いていることを確認する。
 
 ```bash
-uvx --from "$SKILLSPECTOR" skillspector scan <skill-dir>/ --no-llm \
+uvx --from git+https://github.com/NVIDIA/skillspector.git@2d198ab910add401cad658d1087e7c7ba24fd640 \
+  skillspector scan <skill-dir>/ --no-llm \
   --baseline .skillspector/baselines/<skill>.yaml
 ```
 

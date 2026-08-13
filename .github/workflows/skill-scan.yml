@@ -42,8 +42,14 @@ jobs:
       - name: Scan skills
         run: |
           set -uo pipefail
+          # SKILL.md から辿ることで、flat な skills/<name>/ と
+          # 入れ子の skills/<category>/<name>/ の両方を拾う。
+          shopt -s globstar nullglob
+          found=0
           fail=0
-          for dir in skills/*/; do
+          for skill_md in skills/**/SKILL.md; do
+            found=$((found + 1))
+            dir="$(dirname "$skill_md")"
             name="$(basename "$dir")"
             baseline=".skillspector/baselines/${name}.yaml"
             args=(scan "$dir" --no-llm --format markdown)
@@ -55,4 +61,10 @@ jobs:
               skillspector "${args[@]}" || fail=1
             echo "::endgroup::"
           done
+          # 0 件は「全部安全」ではなく glob の壊れ。黙って通さない。
+          if [[ "$found" -eq 0 ]]; then
+            echo "::error::no SKILL.md found under skills/ — scan matched nothing"
+            exit 1
+          fi
+          echo "scanned ${found} skill(s)"
           exit "$fail"
