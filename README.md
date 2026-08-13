@@ -82,6 +82,31 @@ also do **not** require a `customizations/<skill>/` entry.
 Do not mix the two shapes (e.g. `upstream: ""` placeholders) — the
 check script's contract is "field absent → original, no sync".
 
+## Security scanning
+
+`.github/workflows/skill-scan.yml` runs [NVIDIA SkillSpector][skillspector]
+over every `skills/<name>/` on PRs and on `main`. It runs with `--no-llm`,
+so the scan is deterministic and needs no API key; `risk_score > 50` exits
+non-zero and fails the job.
+
+Everything fetched from outside is pinned by **commit SHA, not tag** —
+tags are mutable, so pinning a verification tool to one defeats the point.
+This applies to the scanner and to the GitHub Actions themselves.
+
+False positives are suppressed per skill in
+`.skillspector/baselines/<skill>.yaml`. Suppressions are bound to a content
+hash, so a finding reactivates if the source it matched changes. Each entry
+carries the reason it was accepted.
+
+For the judgement layer on top of the scanner — evaluating intent,
+separating false positives, deciding suppress-vs-fix — use the
+`skill-audit` skill locally. It drives the same pinned scanner and can
+enable the semantic pass via `SKILLSPECTOR_PROVIDER=claude_cli`, which
+uses the local Claude CLI session instead of an API key. Run it when
+reviewing an `[upstream-sync]` PR or before adopting any external skill.
+
+[skillspector]: https://github.com/NVIDIA/skillspector
+
 ## Development (symlink workflow)
 
 For heavy iteration on a skill while using it in a consumer project,
