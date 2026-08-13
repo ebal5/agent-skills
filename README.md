@@ -49,7 +49,7 @@ profile files.
 ## Skill metadata conventions
 
 Every `SKILL.md` has YAML frontmatter. The `metadata` block follows
-one of two shapes depending on origin:
+one of three shapes depending on origin:
 
 ### Ported from another repo (tracked upstream)
 
@@ -67,6 +67,24 @@ metadata:
 These skills should also have an entry under `customizations/<skill>/`
 (see `customizations/README.md`).
 
+### Ported from a gist (tracked upstream)
+
+```yaml
+metadata:
+  origin: "https://github.com/ebal5/agent-skills"
+  upstream: "gist:<owner>/<gist-id>"
+  upstream-path: "SKILL.md"
+  upstream-ref: "latest"
+  upstream-sha: <40-char gist revision id at last sync>
+```
+
+Gists have no refs and no compare view, so `check_upstreams.py` keys them
+by the newest revision id from `GET /gists/{id}` (`history[0].version`)
+and links `https://gist.github.com/<id>/revisions` instead of a diff.
+The `gist:` prefix is what selects this behaviour; `upstream-ref` is
+required by the "field absent → no sync" contract but its value is
+ignored. The owner segment is optional and informational.
+
 ### Authored originally in this repo
 
 ```yaml
@@ -79,7 +97,7 @@ The `upstream-*` fields are **absent** (not empty strings).
 so the absence is the signal that no sync is needed. These skills
 also do **not** require a `customizations/<skill>/` entry.
 
-Do not mix the two shapes (e.g. `upstream: ""` placeholders) — the
+Do not mix the shapes (e.g. `upstream: ""` placeholders) — the
 check script's contract is "field absent → original, no sync".
 
 ## Security scanning
