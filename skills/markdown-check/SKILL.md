@@ -196,8 +196,7 @@ table の separator row（区切り行）のスタイルが不統一だと、MD0
 させるとエラーが連発する。
 
 **このリポジトリの convention は空白入り形式**（`| --- | --- |`）。
-review-loop / grill-me が先例。新規 markdown を書くときは最初からこの形で
-書けば落とし穴を回避できる。
+新規 markdown を書くときは最初からこの形で書けば落とし穴を回避できる。
 
 ```markdown
 | col1 | col2 | col3 |
