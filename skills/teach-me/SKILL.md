@@ -13,7 +13,7 @@ description: |
 
   以下では使用しない:
   - 単純な質問への一回答で済む場合
-  - 自分の計画を批判的に詰めてほしい場合（→ grill-me を使う）
+  - 自分の計画を批判的に詰めてほしい場合（→ grilling を使う）
 allowed-tools: Read, Glob, Grep, AskUserQuestion, Bash(git diff:*), Bash(git log:*), Bash(git show:*), Bash(git status:*)
 model: sonnet
 effort: high

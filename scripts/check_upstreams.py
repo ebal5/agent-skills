@@ -98,6 +98,7 @@ def create_sync_pr(
         "## Review\n\n"
         "- [ ] upstream の差分を確認する\n"
         "- [ ] 取り込みたい変更があれば追加コミットする\n"
+        "- [ ] `skill-audit` skill で監査する（CI の静的スキャンに意図の評価を足す）\n"
         "- [ ] 独自カスタマイズを維持・調整する\n"
         "- [ ] 必要なら ATTRIBUTION.md を更新する\n"
         f"- [ ] `customizations/{skill_name}/NOTES.md` にも追記する\n\n"
