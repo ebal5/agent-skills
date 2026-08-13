@@ -1,0 +1,58 @@
+name: skill-scan
+
+# NVIDIA SkillSpector でスキルの静的セキュリティスキャンを行う。
+#
+# --no-llm の静的解析のみで走らせるため、API キーは不要で結果は決定的。
+# risk_score > 50 で exit 1 になるのでそのままゲートとして機能する。
+#
+# 誤検知は .skillspector/baselines/<skill>.yaml で抑制する。抑制は
+# 内容ハッシュに紐づくので、該当箇所が変わると再び検出される。
+
+on:
+  pull_request:
+    paths:
+      - "skills/**"
+      - ".skillspector/**"
+      - ".github/workflows/skill-scan.yml"
+  push:
+    branches: [main]
+    paths:
+      - "skills/**"
+      - ".skillspector/**"
+      - ".github/workflows/skill-scan.yml"
+
+# サプライチェーン対策として、外部から取得するものはすべて commit SHA で pin する。
+# タグは付け替え可能なので、検証ツールの pin には使わない。
+env:
+  # NVIDIA/skillspector v2.9.4
+  SKILLSPECTOR_REF: 2d198ab910add401cad658d1087e7c7ba24fd640
+
+jobs:
+  skillspector:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      # actions/checkout v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      # astral-sh/setup-uv v10.0.0
+      - uses: astral-sh/setup-uv@ae62891fec2bb8e7d6c99fc78c9fec3a63790f8d
+
+      - name: Scan skills
+        run: |
+          set -uo pipefail
+          fail=0
+          for dir in skills/*/; do
+            name="$(basename "$dir")"
+            baseline=".skillspector/baselines/${name}.yaml"
+            args=(scan "$dir" --no-llm --format markdown)
+            if [[ -f "$baseline" ]]; then
+              args+=(--baseline "$baseline")
+            fi
+            echo "::group::skillspector scan ${name}"
+            uvx --from "git+https://github.com/NVIDIA/skillspector.git@${SKILLSPECTOR_REF}" \
+              skillspector "${args[@]}" || fail=1
+            echo "::endgroup::"
+          done
+          exit "$fail"

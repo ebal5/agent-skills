@@ -1,0 +1,30 @@
+# SkillSpector baseline — findings listed here are suppressed on future scans.
+# Edit 'reason' fields and add glob 'rules' as needed. See docs/SUPPRESSION.md.
+version: 2
+scanner_version: 2.9.4
+rules: []
+fingerprints:
+- hash: sha256:4ecc062065134c6224fe378e0c577d4969b3b9e8edf56a944c4f4313c1fa412c
+  rule_id: PE3
+  file: SKILL.md
+  reason: 'False positive: these lines are the skill''s own catalogue of patterns
+    to REJECT (secret paths, curl|bash, exec/base64), quoted as negative examples
+    in a security pre-review skill. Reviewed 2026-08-13.'
+- hash: sha256:d3e0cbde060cd9700d93670ca8239c98e6352cf6607a58225aa29a9f44cb605c
+  rule_id: PE3
+  file: pre-review-prompt.md
+  reason: 'False positive: these lines are the skill''s own catalogue of patterns
+    to REJECT (secret paths, curl|bash, exec/base64), quoted as negative examples
+    in a security pre-review skill. Reviewed 2026-08-13.'
+- hash: sha256:59e32cf19b4421c9dde508391220949366410cf34fb5e1fe90a30036c92e51a7
+  rule_id: SC2
+  file: SKILL.md
+  reason: 'False positive: these lines are the skill''s own catalogue of patterns
+    to REJECT (secret paths, curl|bash, exec/base64), quoted as negative examples
+    in a security pre-review skill. Reviewed 2026-08-13.'
+- hash: sha256:20cf637d50492e2f689ea4ca3e32d412434dc9511d8bb024849035090532f759
+  rule_id: TM1
+  file: SKILL.md
+  reason: 'False positive: these lines are the skill''s own catalogue of patterns
+    to REJECT (secret paths, curl|bash, exec/base64), quoted as negative examples
+    in a security pre-review skill. Reviewed 2026-08-13.'

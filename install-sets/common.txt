@@ -6,5 +6,6 @@ grill-me
 handover
 markdown-check
 review-loop
+skill-audit
 teach-me
 uv-script
