@@ -7,14 +7,19 @@ Personal collection of [Agent Skills](https://agentskills.io/) for AI coding age
 Install a single skill:
 
 ```bash
-gh skill install ebal5/agent-skills <skill-name> --agent claude-code --scope user --pin v0.4.0
+gh skill install ebal5/agent-skills <skill-name> --agent claude-code --scope user --pin <tag>
 ```
 
 Bulk install a profile (curated lists in `install-sets/<profile>.txt`):
 
 ```bash
-./install.sh common --scope user --pin v0.4.0
+./install.sh common --scope user --pin <tag>
 ```
+
+Pick `<tag>` from [the tag list](https://github.com/ebal5/agent-skills/tags) —
+the examples do not name a version because tags are cut automatically
+(see [Releases](#releases)) and a literal one here would go stale on every
+merge.
 
 ## Repository structure
 
@@ -99,6 +104,35 @@ also do **not** require a `customizations/<skill>/` entry.
 
 Do not mix the shapes (e.g. `upstream: ""` placeholders) — the
 check script's contract is "field absent → original, no sync".
+
+## Releases
+
+`.github/workflows/release.yml` tags `main` automatically. The version is
+derived from what actually reaches consumers: a skill directory (`gh skill
+install` copies only that directory) and an install-set profile
+(`./install.sh <profile>`).
+
+| Change | Bump |
+| --- | --- |
+| Skill removed or renamed; profile removed or renamed; entry dropped from a profile | **major** |
+| Skill added; profile added; entry added to a profile | minor |
+| Existing skill's content changed | patch |
+| README, CI or `scripts/` only | no tag |
+
+Major is "a name someone pinned disappears" — `gh skill install <name>` or
+`./install.sh <profile>` starts failing on the consumer's side. That is the
+one failure this repo can inflict remotely, so it gets its own digit.
+
+The decision lives in `scripts/next_version.py` and can be run locally to
+see what the next merge would produce:
+
+```bash
+python3 scripts/next_version.py                    # against the highest tag
+python3 scripts/next_version.py --prev v1.0.0 --format notes
+```
+
+To land something on `main` without cutting a tag, put `[skip release]` in
+the commit message.
 
 ## Security scanning
 
