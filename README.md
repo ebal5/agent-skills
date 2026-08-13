@@ -42,8 +42,9 @@ profile files.
 実害はなかった（dotfiles も個人管理なので「個人用か共有か」自体は分離理由には
 ならない）。分離が効いてくるのは上記 2 点が関わるときだけ、という温度感。
 
-両者は参照しあう（例: `uv-script` / `dev-workflow` が chezmoi 適用を前提に
-言及する）が、所有・配布の責務は分離している。
+スキル本文は chezmoi を前提にしない。dotfiles 側の規約に触れる場合も
+「配布手段の一例」として書き、chezmoi がなくても成立する記述に留める
+（例: `uv-script` のファイル配置節）。所有・配布の責務は分離しておく。
 
 ## Skill metadata conventions
 

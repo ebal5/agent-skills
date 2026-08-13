@@ -17,7 +17,7 @@ description: |
   - 「A案 vs B案 どちらが良い」のみの一般的な技術選定・UI/DB 設計（ドメイン語を伴わない）
   - 既存コードの計測 → coupling-audit（未実装）
   - 純粋な実装タスク
-allowed-tools: Read, Glob, Grep, Agent, Task
+allowed-tools: Read, Glob, Grep
 model: opus
 effort: high
 license: MIT
@@ -200,17 +200,3 @@ advisor が対話で 3 次元スコアを引き出す際の初期推定表。ユ
 coupling-model 側には case-studies を置かない方針（Issue #19 対処）:
 consuming skill が文脈に合わせて自前で保持することで skill 間の raw-path
 結合を回避している。
-
-## チェックポイント評価
-
-本スキルは Opus モデルで動作するが、大きな設計分岐（例: マイクロサービス分割の最終判断、ADR 確定前）においては、別の独立した Opus subagent を Task ツールで起動して盲点・未検討の仮定・矛盾をチェックすることを推奨する。
-
-```text
-Task(
-  subagent_type: "general-purpose",
-  model: "opus",
-  prompt: "以下の設計決定の議論を監査し、盲点・未検討の仮定・矛盾を報告してください。\n[議論サマリを渡す]"
-)
-```
-
-監査結果をワークフローに統合し、必要であれば評価を再実行する。

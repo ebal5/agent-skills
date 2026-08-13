@@ -5,6 +5,24 @@
 
 ## Entries
 
+### 2026-08-13 — ローカル変更のみ（upstream sync ではない）
+
+独自セクション `## Checkpoint evaluation` を **削除**した。upstream との
+差分を減らす方向の変更で、`upstream-sha` は aaf2453f のまま据え置き。
+
+- 削除理由: Claude Opus 5 のプロンプティング指針
+  (<https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5>)
+  が「サブエージェントを自分の作業の検証・二重チェックに使わない」
+  「明示的な検証指示は over-verification を招く」としており抵触するため。
+  加えて本文が指定していた `Task` ツールは現行ハーネスに存在せず
+  (`Agent` が該当)、指示自体が実行不能だった。
+- 併せて frontmatter の `allowed-tools` から `Task` を除去し
+  `Read, Glob, Grep` に縮小。
+- 維持: attribution コメント、`license: MIT` / `metadata` ブロック、
+  ~80 char re-wrap。
+- 次回 sync 時の注意: 本セクションは upstream 由来ではないため、
+  upstream 側に対応する記述は存在しない。復活させないこと。
+
 ### 2026-06-02 — upstream aaf2453f (PR #32)
 
 651eab03 → aaf2453f の sync。
