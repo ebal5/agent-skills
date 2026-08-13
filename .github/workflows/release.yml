@@ -1,0 +1,65 @@
+name: release
+
+# main が進んだら、配布物の変化からバージョンを決めてタグを打つ。
+#
+# 判定は scripts/next_version.py に置いてある（ローカルでも同じ結果を確認できる）。
+#   major  消費側が pin している名前が消える変更（スキル削除・改名、
+#          プロファイル削除・改名、プロファイルからの除外）
+#   minor  スキル追加、プロファイル追加、プロファイルへの追加
+#   patch  既存スキルの内容更新
+#   none   README / CI / scripts だけの変更 → タグを打たない
+#
+# タグを打ちたくないときは、コミットメッセージに [skip release] を入れる。
+
+on:
+  push:
+    branches: [main]
+
+# 連続マージでタグが競合しないよう直列化する。
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip release]')"
+    permissions:
+      contents: write
+    steps:
+      # actions/checkout v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          # タグ判定に全履歴とタグが要る
+          fetch-depth: 0
+
+      - name: Decide next version
+        id: decide
+        run: |
+          set -euo pipefail
+          version="$(python3 scripts/next_version.py --format tag)"
+          if [[ -z "$version" ]]; then
+            echo "配布物に変化なし。タグは打たない。"
+            echo "version=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          python3 scripts/next_version.py --format notes > /tmp/release-notes.txt
+          echo "--- release notes ---"
+          cat /tmp/release-notes.txt
+
+      - name: Create and push tag
+        if: steps.decide.outputs.version != ''
+        env:
+          VERSION: ${{ steps.decide.outputs.version }}
+        run: |
+          set -euo pipefail
+          if git rev-parse "$VERSION" >/dev/null 2>&1; then
+            echo "::error::$VERSION は既に存在する。手動で打ったタグと衝突している可能性がある。"
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$VERSION" -F /tmp/release-notes.txt
+          git push origin "$VERSION"
+          echo "::notice::tagged $VERSION"
