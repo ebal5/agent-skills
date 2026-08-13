@@ -34,9 +34,33 @@ def gh_api(path: str) -> dict | None:
     return json.loads(out)
 
 
+GIST_PREFIX = "gist:"
+
+
+def gist_id(upstream: str) -> str:
+    """Extract the gist id from a `gist:[<owner>/]<id>` upstream value."""
+    return upstream[len(GIST_PREFIX):].split("/")[-1]
+
+
 def get_latest_commit(repo: str, ref: str) -> str | None:
+    """Latest revision of the upstream.
+
+    Repos are keyed by commit SHA at `ref`. Gists have no refs, so they are
+    keyed by the newest revision id; `ref` is ignored for them.
+    """
+    if repo.startswith(GIST_PREFIX):
+        data = gh_api(f"gists/{gist_id(repo)}")
+        history = (data or {}).get("history") or []
+        return history[0].get("version") if history else None
     data = gh_api(f"repos/{repo}/commits/{ref}")
     return data.get("sha") if data else None
+
+
+def compare_url(upstream: str, recorded_sha: str, latest_sha: str) -> str:
+    """Link showing what changed upstream. Gists only offer a revision list."""
+    if upstream.startswith(GIST_PREFIX):
+        return f"https://gist.github.com/{gist_id(upstream)}/revisions"
+    return f"https://github.com/{upstream}/compare/{recorded_sha}...{latest_sha}"
 
 
 def open_pr_exists(branch: str) -> bool:
@@ -123,16 +147,14 @@ def create_sync_pr(
         )
     else:
         pr_title = f"[upstream-sync] {skill_name}: {upstream} -> {latest_sha[:8]}"
-        compare_url = (
-            f"https://github.com/{upstream}/compare/{recorded_sha}...{latest_sha}"
-        )
+        compare = compare_url(upstream, recorded_sha, latest_sha)
         pr_body = (
             f"Upstream **{upstream}** (`{upstream_ref}`) has new commits.\n\n"
             f"- Skill: `{skill_name}`\n"
             f"- Upstream path: `{upstream_path}`\n"
             f"- Previous SHA: `{recorded_sha}`\n"
             f"- Latest SHA: `{latest_sha}`\n"
-            f"- Compare: {compare_url}\n\n"
+            f"- Compare: {compare}\n\n"
             f"{review_block}"
         )
 
