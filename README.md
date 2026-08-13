@@ -7,13 +7,13 @@ Personal collection of [Agent Skills](https://agentskills.io/) for AI coding age
 Install a single skill:
 
 ```bash
-gh skill install ebal5/agent-skills <skill-name> --agent claude-code --scope user --pin v0.3.0
+gh skill install ebal5/agent-skills <skill-name> --agent claude-code --scope user --pin v0.4.0
 ```
 
 Bulk install a profile (curated lists in `install-sets/<profile>.txt`):
 
 ```bash
-./install.sh common --scope user --pin v0.3.0
+./install.sh common --scope user --pin v0.4.0
 ```
 
 ## Repository structure
