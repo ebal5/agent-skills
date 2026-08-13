@@ -7,7 +7,7 @@ description: |
   サンドボックスは外部ネット exfil は防ぐが secret 読取や CWD 内の
   source code poisoning は防げないため、実行前チェックが必要。
 
-  以下の場面で使用 (review-loop skill からも呼ばれる):
+  以下の場面で使用 (他の skill から sub-skill として呼ばれることもある):
   - 動作確認のため /tmp/check_*.py 等の一時スクリプトを実行
   - 調査 snippet を uv run python や .venv/bin/python で走らせる
   - サブエージェントが生成したスクリプトを実行する

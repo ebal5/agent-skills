@@ -5,7 +5,6 @@ execute-script-safely
 grilling
 handover
 markdown-check
-review-loop
 skill-audit
 teach-me
 uv-script
