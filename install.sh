@@ -5,7 +5,7 @@
 #
 # Each non-blank, non-comment line in install-sets/<profile>.txt is
 # passed as the skill name to `gh skill install`. Both flat names
-# ("dev-workflow") and repo-relative paths ("category/skill-name")
+# ("handover") and repo-relative paths ("category/skill-name")
 # work because gh skill walks the source repo to locate SKILL.md.
 
 set -euo pipefail

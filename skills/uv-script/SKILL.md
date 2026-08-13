@@ -116,7 +116,17 @@ def process(items: list[str]) -> dict[str, int]:
 
 ## ファイル配置
 
-dotfilesリポジトリの場合：
+shebang で直接実行させるため、配置後に実行ビットを立てて PATH の通った
+ディレクトリに置く：
 
-- `dot_scripts/executable_<name>` として配置
-- chezmoi適用後 `~/.scripts/<name>` として利用可能
+```bash
+chmod +x <name>
+```
+
+- 単発ツール: `~/.local/bin/<name>` など、PATH 上の個人用 bin
+- プロジェクト付属: リポジトリの `scripts/<name>`（PATH には載せず
+  `./scripts/<name>` で実行）
+
+dotfiles マネージャで配布する場合は、その規約に従って配置する
+（例: chezmoi なら `dot_scripts/executable_<name>` が適用後に
+`~/.scripts/<name>` になる）。

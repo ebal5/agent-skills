@@ -19,6 +19,7 @@ description: |
     (ただし未知モジュールを import する場合は対象)
 allowed-tools: Agent, Read, Write, Bash
 model: haiku
+effort: low
 license: MIT
 metadata:
   origin: "https://github.com/ebal5/agent-skills"

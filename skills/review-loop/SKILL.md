@@ -16,6 +16,7 @@ description: |
   - 実装前の設計議論 → /grill-me が適切
 allowed-tools: Agent, Bash(gh issue:*), Bash(gh label list:*), Bash(gh pr list:*), Bash(gh pr view:*), Bash(git log:*), Bash(git diff:*), Bash(git status:*), Bash(git branch:*), TaskCreate, TaskUpdate, TaskList, TaskGet, Read, Write, Edit, Glob, Grep
 model: sonnet
+effort: medium
 license: MIT
 metadata:
   origin: "https://github.com/ebal5/agent-skills"
@@ -25,6 +26,30 @@ metadata:
 
 複数視点の fresh-context reviewer を並列起動し、スコア閾値で triage、
 新規 5+ 指摘が出なくなるまで収束させるレビュープロセス。
+
+## 組み込み `/code-review` との使い分け
+
+指摘を出すところまでは組み込みの `/code-review` と重なる。差分は
+**1 回の指摘で終わるか、収束するまで回すか**にある。
+
+| | `/code-review` | review-loop |
+| --- | --- | --- |
+| 実行形態 | 単発。diff / PR / パスを 1 回レビュー | 4 視点並列 → triage → 対応 → 再レビューのループ |
+| 出口 | 指摘一覧を返して終了 | 新規 5+ 指摘が 0 になるまで、または上限ラウンドまで |
+| 残タスク | 会話内に残る | スコア 5-7 を `gh issue create` で永続化 |
+| 反映 | `--fix` / `--comment` | ≥8 は TDD で即 FIX、Refactor プランは別 Agent で評価 |
+
+**`/code-review` を使う場面**: 変更が 1 コミット〜1 PR に収まり、指摘を
+受け取ってその場で直せば済むとき。effort 指定で深さも調整できるので、
+通常のレビューはこちらで足りる。
+
+**review-loop を使う場面**: 機能実装が一段落し、後続セッションに引き継ぐ
+前提で残タスクを Issue として棚卸ししたいとき。単発レビューでは
+「直したことで生まれた二次問題」を拾えないため、収束ループが要る。
+
+両方を回す必要はない。review-loop の Phase 1 を `/code-review` で
+代替してもよいが、その場合は 4 視点の独立性（既存追認の回避）が
+落ちる点を意識すること。
 
 ## 前提
 
@@ -137,7 +162,7 @@ round 1 だけだと「構造を分けたが境界が曖昧」という状態で
 ### 発火パターン
 
 - skill-creator で scaffold 直後
-- dev-workflow の Phase 4 (Wrap-up) 前の最終検証として
+- 機能実装が一通り終わり、merge 前の最終検証をしたいとき
 - 「この skill レビューしてほしい」という明示的依頼
 
 ### 注意点
