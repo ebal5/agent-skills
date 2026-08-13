@@ -4,27 +4,35 @@ version: 2
 scanner_version: 2.9.4
 rules: []
 fingerprints:
-- hash: sha256:4ecc062065134c6224fe378e0c577d4969b3b9e8edf56a944c4f4313c1fa412c
+- hash: sha256:8e570760a3b606e18f8eb69beb2fa75c6e0df8d88906f2be72a0245a23d81264
   rule_id: PE3
   file: SKILL.md
   reason: 'False positive: these lines are the skill''s own catalogue of patterns
     to REJECT (secret paths, curl|bash, exec/base64), quoted as negative examples
-    in a security pre-review skill. Reviewed 2026-08-13.'
+    in a security pre-review skill. Re-confirmed 2026-08-13 after an unrelated description
+    edit reactivated the SKILL.md fingerprints; the flagged lines themselves are byte-identical
+    to the reviewed version.'
 - hash: sha256:d3e0cbde060cd9700d93670ca8239c98e6352cf6607a58225aa29a9f44cb605c
   rule_id: PE3
   file: pre-review-prompt.md
   reason: 'False positive: these lines are the skill''s own catalogue of patterns
     to REJECT (secret paths, curl|bash, exec/base64), quoted as negative examples
-    in a security pre-review skill. Reviewed 2026-08-13.'
-- hash: sha256:59e32cf19b4421c9dde508391220949366410cf34fb5e1fe90a30036c92e51a7
+    in a security pre-review skill. Re-confirmed 2026-08-13 after an unrelated description
+    edit reactivated the SKILL.md fingerprints; the flagged lines themselves are byte-identical
+    to the reviewed version.'
+- hash: sha256:3d5b12fc146ef7082242d784f0d21a5504c5dc59819f533480f9f7b8448ad630
   rule_id: SC2
   file: SKILL.md
   reason: 'False positive: these lines are the skill''s own catalogue of patterns
     to REJECT (secret paths, curl|bash, exec/base64), quoted as negative examples
-    in a security pre-review skill. Reviewed 2026-08-13.'
-- hash: sha256:20cf637d50492e2f689ea4ca3e32d412434dc9511d8bb024849035090532f759
+    in a security pre-review skill. Re-confirmed 2026-08-13 after an unrelated description
+    edit reactivated the SKILL.md fingerprints; the flagged lines themselves are byte-identical
+    to the reviewed version.'
+- hash: sha256:329dbda8d53fd1709b5d4dcb4dca9ea5ee935520978462b306bf1aa021916c7a
   rule_id: TM1
   file: SKILL.md
   reason: 'False positive: these lines are the skill''s own catalogue of patterns
     to REJECT (secret paths, curl|bash, exec/base64), quoted as negative examples
-    in a security pre-review skill. Reviewed 2026-08-13.'
+    in a security pre-review skill. Re-confirmed 2026-08-13 after an unrelated description
+    edit reactivated the SKILL.md fingerprints; the flagged lines themselves are byte-identical
+    to the reviewed version.'
