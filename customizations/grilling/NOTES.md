@@ -8,6 +8,29 @@
 
 ## Entries
 
+### 2026-08-18 — upstream 068b6e0c (PR #53)
+
+84fdeffd → 068b6e0c の sync。
+
+- upstream の変更点: 本文中の em dash (`—`) をコロン / セミコロンに置き換える
+  句読点クリーンアップのみ（"standardizes skill-invocation punctuation for
+  clearer plain-text/AI reading" 系のリポジトリ横断コミットの一部）。
+  frontmatter・ロジックの変更はなし。
+- 当リポジトリの対応: 同じ置き換えをローカルの再ラップ済み本文にも適用した
+  （4 箇所: "settled — the questions" → "settled: the questions"、
+  "reshapes the tree — settled" → "reshapes the tree: settled"、
+  "worth it — don't ask" → "worth it; don't ask"、
+  "wait for the result — ask" → "wait for the result; ask"、
+  "user's — put each" → "user's: put each"）。
+  独自に緩めた「事実調査は自分で / 範囲が広いときは sub-agent」の文面は
+  upstream 側でも変更されていないため維持。
+- `allowed-tools` / `model` / `effort` / `metadata` / attribution コメント /
+  ~80 char re-wrap は従来どおり維持。
+- ATTRIBUTION.md: 更新不要（PR #44 の判断を継続）。
+- SkillSpector: CI の `skillspector` チェックが green（句読点のみの変更で
+  ツール権限や挙動に変化なしのため、追加の手動監査は実施せず）。
+- 次回 sync 時の注意: 差分を見るときは `grilling` を見ること。
+
 ### 2026-08-13 — upstream 84fdeffd (PR #44) / `grill-me` → `grilling` に改名
 
 be55a797 → 84fdeffd の sync。**upstream が grill-me を分割した**ため、
