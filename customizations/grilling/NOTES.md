@@ -8,6 +8,26 @@
 
 ## Entries
 
+### 2026-08-23 — upstream 5b15a47f (PR #54)
+
+068b6e0c → 5b15a47f の sync。
+
+- upstream の変更点 (upstream PR #917 "Separate questions in a round with an
+  HR"): フォーマット例を 1 問だけのものから、`---` で区切った 2 問構成の
+  ラウンド全体を示す例に拡張。あわせて見出し文言も
+  "Each question should be formatted like so:" →
+  "Format a round like so:" に変更。ロジック・frontmatter の変更はなし。
+- 当リポジトリの対応: 同じ変更をローカルの再ラップ済み本文にも適用した
+  （見出し文言の変更、および Q1 の後に `---` 区切りと Q2 の例を追加）。
+  本文冒頭で「フロンティア全体を 1 ラウンドでまとめて聞く」ことは既に
+  明記済みのため、意味的な矛盾はない。
+- `allowed-tools` / `model` / `effort` / `metadata` / attribution コメント /
+  ~80 char re-wrap は従来どおり維持。
+- ATTRIBUTION.md: 更新不要（PR #44 の判断を継続）。
+- SkillSpector: 例のフォーマットのみの変更でツール権限や挙動に変化はない
+  ため、CI の静的スキャン任せとし追加の手動監査は実施せず。
+- 次回 sync 時の注意: 差分を見るときは `grilling` を見ること。
+
 ### 2026-08-18 — upstream 068b6e0c (PR #53)
 
 84fdeffd → 068b6e0c の sync。

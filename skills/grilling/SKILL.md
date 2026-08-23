@@ -14,7 +14,7 @@ metadata:
   upstream: "mattpocock/skills"
   upstream-path: "skills/productivity/grilling"
   upstream-ref: "main"
-  upstream-sha: 068b6e0c62393147daf03530149cdce209c93da8
+  upstream-sha: 5b15a47f2d7150f545fbcacbfe381787fc0230dc
 ---
 
 <!-- Based on https://github.com/mattpocock/skills (MIT License, Copyright (c) 2026 Matt Pocock) -->
@@ -29,10 +29,16 @@ guessing at answers you haven't heard yet. Ask the whole frontier in one
 round: number each question and give your recommended answer. Then wait for
 the user's answers before the next round.
 
-Each question should be formatted like so:
+Format a round like so:
 
 ```text
 ❓ **Q1** - **<question title>**: <question body, might be multiple paragraphs, including multiple choices>
+
+➡️ <your recommended answer>
+
+---
+
+❓ **Q2** - **<question title>**: <question body, might be multiple paragraphs, including multiple choices>
 
 ➡️ <your recommended answer>
 ```
