@@ -9,6 +9,11 @@ on:
     - cron: "0 21 * * SUN"
   workflow_dispatch:
 
+# 手動 dispatch と定期実行が重なって同じ PR を二重に作らないよう直列化する。
+concurrency:
+  group: check-upstreams
+  cancel-in-progress: false
+
 permissions:
   contents: write
   pull-requests: write

@@ -1,12 +1,23 @@
 name: lint
 
+# push は main のみ。PR ブランチへの push は pull_request 側で拾うので、
+# ここで全ブランチを見ると同じ SHA を 2 回走らせることになる。
 on:
-  push:
   pull_request:
+  push:
+    branches: [main]
+
+# 同じ PR に続けて push したときは古い実行を打ち切る。
+# main への push は 1 マージ 1 結果を残したいので打ち切らない。
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   lint:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       # actions/checkout v4
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
