@@ -8,6 +8,21 @@
 
 ## Entries
 
+### 2026-09-06 — upstream 3cca18b3 (PR #58)
+
+6654f6b6 → 3cca18b3 の sync。
+
+- upstream の変更点: `skills/productivity/grilling/SKILL.md` は 6654f6b6 と
+  3cca18b3 で完全一致（バイト単位で同一。diff なし）。この区間の upstream
+  commit は `CLAUDE.md` の記述更新と `scripts/link-skills.sh` の
+  `misc/` 除外対応のみで、`grilling` には無関係。取り込むべき本文変更はなし。
+- 当リポジトリの対応: `metadata.upstream-sha` の更新のみ（bot commit）。
+  本文・frontmatter のそれ以外の変更なし。
+- ATTRIBUTION.md: 更新不要（PR #44 の判断を継続）。
+- SkillSpector: 本文変更なしのため追加の手動監査は実施せず、CI の静的
+  スキャン任せとする。
+- 次回 sync 時の注意: 差分を見るときは `grilling` を見ること。
+
 ### 2026-08-30 — upstream 6654f6b6 (PR #55)
 
 5b15a47f → 6654f6b6 の sync。
