@@ -6,6 +6,34 @@
 
 ## Entries
 
+### 2026-09-20 — upstream ca7c8088 (PR #60)
+
+3c262914 → ca7c8088 の sync。
+
+- upstream の変更点: upstream commit `bba9d13` ("Make show-me
+  user-invocable") が `skills/show-me/SKILL.md` の frontmatter に
+  `disable-model-invocation: true` を追加した（本文・description の変更は
+  なし）。他は無関係スキル `visual-pr` の新設のみ。
+- 当リポジトリの対応: **`disable-model-invocation: true` は不採用**。
+  当リポジトリの show-me は description を日本語トリガー
+  （「show me」「図で」「図解して」「可視化して」等）まで拡張し、
+  自動発火（モデルによる自律的な skill 選択）を維持する設計で移植した
+  （2026-09-04 エントリ参照）。`disable-model-invocation: true` を入れると
+  スラッシュコマンド等の明示呼び出し専用になり、この設計意図と正面から
+  矛盾するため見送る。grilling の 2026-08-13 (PR #44) エントリで
+  `grill-me` の `disable-model-invocation: true` を同じ理由で不採用とした
+  判断を踏襲する。
+- `allowed-tools` / `model` / `effort` / `metadata` / attribution コメント /
+  description の拡張 / Artifact 置き換え / ~80 char re-wrap は従来どおり
+  維持。
+- ATTRIBUTION.md: 更新不要（show-me は専用 ATTRIBUTION.md を持たない。
+  2026-09-04 の判断を継続）。
+- SkillSpector: frontmatter のみの差分（かつ不採用）のため追加の手動監査は
+  実施せず、CI の静的スキャン任せとする。
+- 次回 sync 時の注意: upstream に新設された `visual-pr` skill は本リポジトリ
+  では未追跡。取り込むかどうかは別途判断すること。差分を見るときは
+  `plugins/show-me/skills/show-me/SKILL.md` だけを見ること。
+
 ### 2026-09-04 — upstream 3c262914（初回移植）
 
 `humanlayer/skills` の `show-me` plugin (plugin.json v1.0.1) を移植した。
