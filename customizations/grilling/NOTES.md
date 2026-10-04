@@ -8,6 +8,16 @@
 
 ## Entries
 
+### 2026-10-04 — upstream 24fe0ef7 (PR #61)
+
+c55ee460 → 24fe0ef7 の sync。
+
+- upstream の変更点: `skills/productivity/grilling` は両 SHA 間で差分なし
+  （`git diff` 空）。取り込むべき本文変更はなし。
+- 当リポジトリの対応: `metadata.upstream-sha` の更新のみ（bot commit）。
+- ATTRIBUTION.md: 更新不要。
+- SkillSpector: 本文変更なしのため手動監査は実施せず、CI の静的スキャン任せ。
+
 ### 2026-09-20 — upstream c55ee460 (PR #59)
 
 3cca18b3 → c55ee460 の sync。
