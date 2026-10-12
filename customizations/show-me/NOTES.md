@@ -6,6 +6,18 @@
 
 ## Entries
 
+### 2026-10-12 — upstream 653b6411 (PR #63)
+
+ca7c8088 → 653b6411 の sync。
+
+- upstream の変更点: `plugins/show-me/skills/show-me/SKILL.md` は ca7c8088 と
+  653b6411 で完全一致（diff なし）。この区間の upstream commit は新設の
+  `rpi` plugin と README / marketplace.json のみで、`show-me` には無関係。
+  取り込むべき本文変更はなし。
+- 当リポジトリの対応: `metadata.upstream-sha` の更新のみ（bot commit）。
+- ATTRIBUTION.md: 更新不要。
+- SkillSpector: 本文変更なしのため追加の手動監査は実施せず、CI に任せる。
+
 ### 2026-09-20 — upstream ca7c8088 (PR #60)
 
 3c262914 → ca7c8088 の sync。
