@@ -8,6 +8,18 @@
 
 ## Entries
 
+### 2026-10-12 — upstream 49dd158d (PR #62)
+
+c55ee460 → 49dd158d の sync（PR #61 の 24fe0ef7 は #62 に置き換えられクローズ）。
+
+- upstream の変更点: `SKILL.md` に 1 文追加のみ。
+  「Word each question so "yes" accepts your recommended answer.」
+  （質問文を「yes」で推奨回答を受け入れられる形にする。upstream #706）。
+- 当リポジトリの対応: 上記 1 文を round フォーマット例の直後に取り込み
+  （~80 char 幅の wrap 方針は維持）。`metadata.upstream-sha` を更新。
+- ATTRIBUTION.md: 更新不要。
+- SkillSpector: 追加文は無害な文体指示のみのため、手動監査は省略し CI に任せる。
+
 ### 2026-09-20 — upstream c55ee460 (PR #59)
 
 3cca18b3 → c55ee460 の sync。

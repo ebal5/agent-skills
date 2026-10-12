@@ -14,7 +14,7 @@ metadata:
   upstream: "mattpocock/skills"
   upstream-path: "skills/productivity/grilling"
   upstream-ref: "main"
-  upstream-sha: c55ee46073ed923f86ce59a5eb3b6d895095d1b7
+  upstream-sha: 49dd158d1076134a641b33efb035946536778336
 ---
 
 <!-- Based on https://github.com/mattpocock/skills (MIT License, Copyright (c) 2026 Matt Pocock) -->
@@ -42,6 +42,8 @@ Format a round like so:
 
 ➡️ <your recommended answer>
 ```
+
+Word each question so "yes" accepts your recommended answer.
 
 Each round the user answers reshapes the tree: settled decisions push the
 frontier outward and unblock questions that depended on them. Recompute the
