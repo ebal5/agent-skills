@@ -8,6 +8,17 @@
 
 ## Entries
 
+### 2026-10-25 — upstream 5beb35b0 (PR #64)
+
+49dd158d → 5beb35b0 の sync。
+
+- upstream の変更点: `skills/productivity/grilling` 配下に差分なし。
+  この区間の変更は `in-progress/chief-of-staff`（wiki 記憶の追加）のみで
+  `grilling` には無関係。取り込むべき本文変更はなし。
+- 当リポジトリの対応: `metadata.upstream-sha` の更新のみ（bot commit）。
+- ATTRIBUTION.md: 更新不要。
+- SkillSpector: 本文変更なしのため手動監査は省略し CI に任せる。
+
 ### 2026-10-12 — upstream 49dd158d (PR #62)
 
 c55ee460 → 49dd158d の sync（PR #61 の 24fe0ef7 は #62 に置き換えられクローズ）。
