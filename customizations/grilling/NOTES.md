@@ -8,6 +8,16 @@
 
 ## Entries
 
+### 2026-11-02 — upstream 4ae2317d (PR #65)
+
+5beb35b0 → 4ae2317d の sync。
+
+- upstream の変更点: 事実調査の sub-agent 指示に "with a fresh context window"
+  を追加（1 文の語句追加のみ）。
+- 当リポジトリの対応: 該当箇所（sub-agent を dispatch する文）に同句を取り込み
+  （~80 char 幅の wrap 方針は維持）。`metadata.upstream-sha` を更新。
+- ATTRIBUTION.md: 更新不要。
+
 ### 2026-10-25 — upstream 5beb35b0 (PR #64)
 
 49dd158d → 5beb35b0 の sync。
