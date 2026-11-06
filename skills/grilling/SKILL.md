@@ -14,7 +14,7 @@ metadata:
   upstream: "mattpocock/skills"
   upstream-path: "skills/productivity/grilling"
   upstream-ref: "main"
-  upstream-sha: 5beb35b040e3de97e54fa9e386d7e42d15c295c2
+  upstream-sha: 4ae2317ddb22b046e26455e4f9c9b3aaaf62212d
 ---
 
 <!-- Based on https://github.com/mattpocock/skills (MIT License, Copyright (c) 2026 Matt Pocock) -->
@@ -52,8 +52,8 @@ question still open in this round belongs to a _later_ round, not this one.
 
 Finding _facts_ is your job, never the user's. When a frontier question needs
 a fact from the environment (filesystem, tools, etc.), look it up yourself,
-and dispatch a sub-agent when the search is broad enough to be worth it;
-don't ask the user for anything you could look up yourself. Don't block on it:
+and dispatch a sub-agent with a fresh context window when the search is broad
+enough to be worth it; don't ask the user for anything you could look up yourself. Don't block on it:
 a running exploration is an unsettled prerequisite, so only the questions
 downstream of it wait for the result; ask the rest of the frontier now. The
 _decisions_ are the user's: put each to them and wait.
