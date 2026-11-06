@@ -22,7 +22,7 @@ metadata:
   upstream: "humanlayer/skills"
   upstream-path: "plugins/show-me/skills/show-me"
   upstream-ref: "main"
-  upstream-sha: 653b6411c1f70c275a18e37673b042ff99f67ceb
+  upstream-sha: 4d69d20f6e9b57b4fcf0d501ccfb1be961f0f329
 ---
 
 <!-- Based on https://github.com/humanlayer/skills (MIT License,
