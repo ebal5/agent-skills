@@ -14,7 +14,7 @@ metadata:
   upstream: "mattpocock/skills"
   upstream-path: "skills/productivity/grilling"
   upstream-ref: "main"
-  upstream-sha: 4ae2317ddb22b046e26455e4f9c9b3aaaf62212d
+  upstream-sha: 5863806dd4e15c63174bee4e7515a4256792ecfa
 ---
 
 <!-- Based on https://github.com/mattpocock/skills (MIT License, Copyright (c) 2026 Matt Pocock) -->
