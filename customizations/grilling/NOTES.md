@@ -8,6 +8,18 @@
 
 ## Entries
 
+### 2026-11-23 — upstream abeeaf95 (PR #68)
+
+4ae2317d → abeeaf95 の sync。
+
+- upstream の変更点: `skills/productivity/grilling` 配下に差分なし。
+  この区間の変更は `in-progress/software-factory` の文言・frontmatter 修正と、
+  全 SKILL.md の frontmatter を検証する CI スクリプト追加のみで `grilling`
+  には無関係。取り込むべき本文変更はなし。
+- 当リポジトリの対応: `metadata.upstream-sha` の更新のみ（bot commit）。
+- ATTRIBUTION.md: 更新不要。
+- SkillSpector: 本文変更なしのため手動監査は省略し CI に任せる。
+
 ### 2026-11-02 — upstream 4ae2317d (PR #65)
 
 5beb35b0 → 4ae2317d の sync。
